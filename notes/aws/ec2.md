@@ -19,58 +19,55 @@ You are only able to change the instance type for EBS backed instances
 Before you start the instance must be powered off and check what you are moving from
 
 
-
-
+```bash
 [ec2-user@ip-172-31-82-241 ~]$ free -m
               total        used        free      shared  buff/cache   available
 Mem:            983          60         543           0         379         785
 Swap:             0           0           0
 With the instance powered off you can now change the instance type
-
+```
 
 Once its powered off you can make the switch and change your work (notice from the snippet how the Public IP changed as we powered off the instance and powered it back on)
 
 
 
-
+```bash
 [ec2-user@ip-172-31-82-241 ~]$ free -m
               total        used        free      shared  buff/cache   available
 Mem:           3942          66        3726           0         149        3686
 Swap:             0           0           0
- 
+```
 
-Placement Groups
+**Placement Groups**
+
 When we start an EC2 instance on AWS we don’t have much visibility of the underlying HW however we have a certain level of control via Placement Groups.  In total there are 3 strategies for Placement Groups.
 
-Cluster - instances are placed within the same rack in the same AZ.  This allows for very low latency and high levels of throughput.  The biggest drawback for this is that if the rack fails then all the instances will suffer an outage.  Use case for this approach:
+***Cluster*** instances are placed within the same rack in the same AZ.  This allows for very low latency and high levels of throughput.  The biggest drawback for this is that if the rack fails then all the instances will suffer an outage.  Use case for this approach:
 
 Big Data job that needs to complete as quickly as possible
 
 
-Spread - This allows for instances to be placed across difference racks in a region.  The maximun number of instances per Spread group is 7 per AZ.  Great for apps that are sensitive to node failures and need to keep them as isolated as possible
+***Spread*** This allows for instances to be placed across difference racks in a region.  The maximun number of instances per Spread group is 7 per AZ.  Great for apps that are sensitive to node failures and need to keep them as isolated as possible
 
 
-Partition - This allows for Partitions to be created out of physical racks within an AZ.  You can then position the instances across the Partitions.  You can only have 7 Partitiond per AZ however these can scale to 100s of instances.  Instances can access their own metadata which will contain the Partition Group they are in.  Physical racks cannot be shared across 2 partitions.  Use cases for this approach:
+***Partition*** This allows for Partitions to be created out of physical racks within an AZ.  You can then position the instances across the Partitions.  You can only have 7 Partitiond per AZ however these can scale to 100s of instances.  Instances can access their own metadata which will contain the Partition Group they are in.  Physical racks cannot be shared across 2 partitions.  Use cases for this approach:
 
-HDFS
-
-HBase
-
-Kafka
-
-Cassandra
-
+- HDFS
+- HBase
+- Kafka
+- Cassandra
 
 The way you create a Placement Groups is via the AWS console in EC2:
 
-
+<img src="images/ec2_image_2.png" alt="EC2 in AWS Console" width="600">
+<img src="images/ec2_image_3.png" alt="EC2 in AWS Console" width="600">
 
 Once the Placement Group has been created you can then spin up and instance and place it in there
 
-
+<img src="images/ec2_image_4.png" alt="EC2 in AWS Console" width="600">
  
+**EC2 Shutdown Behaviour and Termination**
 
-EC2 Shutdown Behaviour and Termination
 When you shutdown an instance from within the OS the default state for it to transition to is Stopped, this can be changed to the Instance will be Terminated.  
 
 You can enable Termination protection which prevents an instance to be terminated via the AWS console and the AWS CLI
