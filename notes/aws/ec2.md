@@ -15,20 +15,17 @@ There are times that you may wish to change an instance type.  For example a rea
 
 You are only able to change the instance type for EBS backed instances
 
-Before you start the instance must be powered off and check what you are moving from
-
+Before you start the instance must be powered off however before we power off its worth jumping on and checking the memory
+allocated to it
 
 ```bash
 [ec2-user@ip-172-31-82-241 ~]$ free -m
               total        used        free      shared  buff/cache   available
 Mem:            983          60         543           0         379         785
 Swap:             0           0           0
-With the instance powered off you can now change the instance type
 ```
 
-Once its powered off you can make the switch and change your work (notice from the snippet how the Public IP changed as we powered off the instance and powered it back on)
-
-
+Once its powered off you can make the switch the instance type in the console and then you can jump back on and run the same command as before - notice how the memory has now increased as the instance size has been changed
 
 ```bash
 [ec2-user@ip-172-31-82-241 ~]$ free -m
