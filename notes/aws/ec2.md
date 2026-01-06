@@ -94,60 +94,39 @@ The system is going down for power-off at Mon 2020-05-18 07:04:45 UTC!
 
 **EC2 Launch Troubleshooting**
 
-In the AWS Console within EC2 you can see what the limits are for your account
+In the AWS Console within EC2 you can access limits for your AWS Account.  Common errors are:
 
-
-InstanceLimitExceeded - This is the error you will get when you try and stand up and instance and you have reached your limits.  This can be rectified by placing a call to AWS support.  At the moment the limit is set to 32 vCPUs however previously it was set to 20 instances
-
-InsufficentInstanceCapacity - This is a limit that has been hit at the AWS end.  It means that currently there is not enough compute resource to satisfy your request in the AZ you have requested.  You can try and solve this by:
-
-Break down the request (from 5 to 1 for example)
-
-Try again later
-
-Deploy a different instance type and then change later
+**InstanceLimitExceeded** this is the error you will get when you try and stand up and instance and you have reached your limits.  This can be rectified by placing a call to AWS support.  At the moment the limit is set to 32 vCPUs however previously it was set to 20 instances
+**InsufficentInstanceCapacity** this is a limit that has been hit at the AWS end.  It means that currently there is not enough compute resource to satisfy your request in the AZ you have requested.  You can try and solve this by:
+  - Break down the request (from 5 to 1 for example)
+  - Try again later
+  - Deploy a different instance type and then change later
 
 If you are trying to spin up and instance and the instance state goes from Pending to Terminated right away it could be one of the following:
+  - Corrupted EBS volume snapshot from which you are trying to deploy the instance from
+  - You have reached your EBS volume limit
+  - The Instance store backed AMI you are trying to boot from is corrupted
+  - The EBS volume is encrypted and you dont have the KMS key to un-encrypt
 
-Corrupted EBS volume snapshot from which you are trying to deploy the instance from
+**EC2 SSH troubleshooting**
 
-You have reached your EBS volume limit
+If you can SSH onto the Public IP of an EC2 instance it could be one of the following:
+- **Unprotected File Error**  wrong permissions are set on the .pem key
+- **Host Key Not Found** wrong username has been used to SSH
+- **Timeout** the SGs or local OS FW are blocking port 22 inbound traffic
 
-The Instance store backed AMI you are trying to boot from is corrupted
+**EC2 Instance Launch Types**
 
-The EBS volume is encrypted and you dont have the KMS key to un-encrypt
+**Ondemand** This what we mostly use when running our labs.  Great for short spikes and for apps that we don’t quite know how their workload will look like.  Billed per second after the first minute they have been up and running
+**Reserved** Think long term usage like DBs.  Once you know the profile of you application you can think of reserving the instance.  1yr to 3yr engament which you pay for upfront.  75% cheaper than Ondemand
+**Convertible Reserved** These are still reserved instances that you can change once they have been spun up.  For example the workload profile changes and you wish to switch from a Memory intensive instance type to a CPU intensive instance type.  54% cheaper than Ondemand
+**Scheduled Reserved instances** you can reserve instances for pre-defined window
+**Spot instances** you set a maximum price you are willing to pay for the instance via a spot request.  providing the spot price is below that you will get an instance providing there is capacity.  Ondemand will trump Spot requests to your Spot instance could be reclaimed with a 2 min warning
+**Dedicated Hosts** Allows you to have visibility of the underlying compute CPU.  The compute host completely allocated to you on a 3yr engagement.  Used for a BYOL or for businesses that have strong compliance
+**Dedicated Instances** You don’t get visibilty of the underlying CPU.  Your instances will still not be shared with other AWS accounts however instances from within your account can be spun up on the compute host.
 
- 
+**EC2 Spot Instances Deep Dive**
 
-EC2 SSH troubleshooting
-Fairly simple part this one.  If you can SSH onto the Public IP of an EC2 instance it could be one of the following:
-
-Unprotected File Error - the wrong permissions are set on the .pem key
-
-Host Key Not Found - the wrong username has been used to SSH
-
-Timeout - the SGs are blocking port 22 inbound traffic
-
- 
-
-EC2 Instance Launch Types
-Ondemand - This what we mostly use when running our labs.  Great for short spikes and for apps that we don’t quite know how their workload will look like.  Billed per second after the first minute they have been up and running
-
-Reserved - Think long term usage like DBs.  Once you know the profile of you application you can think of reserving the instance.  1yr to 3yr engament which you pay for upfront.  75% cheaper than Ondemand
-
-Convertible Reserved - These are still reserved instances that you can change once they have been spun up.  For example the workload profile changes and you wish to switch from a Memory intensive instance type to a CPU intensive instance type.  54% cheaper than Ondemand
-
-Scheduled Reserved instances - you can reserve instances for pre-defined window
-
-Spot instances - you set a maximum price you are willing to pay for the instance via a spot request.  providing the spot price is below that you will get an instance providing there is capacity.  Ondemand will trump Spot requests to your Spot instance could be reclaimed with a 2 min warning
-
-Dedicated Hosts - Allows you to have visibility of the underlying compute CPU.  The compute host completely allocated to you on a 3yr engagement.  Used for a BYOL or for businesses that have strong compliance
-
-Dedicated Instances - You don’t get visibilty of the underlying CPU.  Your instances will still not be shared with other AWS accounts however instances from within your account can be spun up on the compute host.
-
- 
-
-EC2 Spot Instances Deep Dive
 Offer great discounts - up to 90% off ondemand prices
 
 The way it works is that you create a spot request with the maximum price you are willing to pay for the instance.  Providing the spot price is below is below what you are willing to pay you get to keep the instance.  if the price goes above that you lose your instance with a 2 min warning to close your work.  Once the spot price returns below your maximum your spot instance request can be satisfied again
