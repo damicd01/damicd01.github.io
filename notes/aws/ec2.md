@@ -7,7 +7,7 @@ This is just a simple lab where:
 
 Below is how the instance looks in the AWS console
 
-![Alt text](images/ec2_image_1.png)
+<img src="images/ec2_image_1.png" alt="EC2 in AWS Console" width="600">
 
 
 **EC2 Change instance type**
