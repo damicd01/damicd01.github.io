@@ -118,11 +118,17 @@ If you can SSH onto the Public IP of an EC2 instance it could be one of the foll
 **EC2 Instance Launch Types**
 
 **Ondemand** This what we mostly use when running our labs.  Great for short spikes and for apps that we don’t quite know how their workload will look like.  Billed per second after the first minute they have been up and running
+
 **Reserved** Think long term usage like DBs.  Once you know the profile of you application you can think of reserving the instance.  1yr to 3yr engament which you pay for upfront.  75% cheaper than Ondemand
+
 **Convertible Reserved** These are still reserved instances that you can change once they have been spun up.  For example the workload profile changes and you wish to switch from a Memory intensive instance type to a CPU intensive instance type.  54% cheaper than Ondemand
+
 **Scheduled Reserved instances** you can reserve instances for pre-defined window
+
 **Spot instances** you set a maximum price you are willing to pay for the instance via a spot request.  providing the spot price is below that you will get an instance providing there is capacity.  Ondemand will trump Spot requests to your Spot instance could be reclaimed with a 2 min warning
+
 **Dedicated Hosts** Allows you to have visibility of the underlying compute CPU.  The compute host completely allocated to you on a 3yr engagement.  Used for a BYOL or for businesses that have strong compliance
+
 **Dedicated Instances** You don’t get visibilty of the underlying CPU.  Your instances will still not be shared with other AWS accounts however instances from within your account can be spun up on the compute host.
 
 **EC2 Spot Instances Deep Dive**
