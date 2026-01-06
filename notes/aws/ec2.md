@@ -1,18 +1,15 @@
-Launching an EC2 Instance
+**Launching an EC2 Instance**
 This is just a simple lab where:
-
-Fire up an ondemand instance
-
-Allow SSH inbound via SGs
-
-SSH onto it via the public IP
+- Fire up an ondemand instance
+- Allow SSH inbound via SGs
+- SSH onto it via the public IP
 
 Below is how the instance looks in the AWS console
 
+![Alt text](images/ec2_image_1.png)
 
- 
 
-EC2 Change instance type
+**EC2 Change instance type**
 There are times that you may wish to change an instance type.  For example a real world scenario could be that you were running out memory and you spot that via Cloudwatch’s Custom Metrics that you started pushing.  In that case you decide to change instance type from t3.micro to t3.small
 
 You are only able to change the instance type for EBS backed instances
