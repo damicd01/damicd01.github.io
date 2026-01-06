@@ -64,38 +64,37 @@ Once the Placement Group has been created you can then spin up and instance and 
  
 **EC2 Shutdown Behaviour and Termination**
 
-When you shutdown an instance from within the OS the default state for it to transition to is Stopped, this can be changed to the Instance will be Terminated.  
+When you shutdown an instance from within the OS the default state for it to transition to is Stopped, this can be changed to the Instance will be Terminated, this can be done via the UI. 
 
 You can enable Termination protection which prevents an instance to be terminated via the AWS console and the AWS CLI
 
-This shows how you can enable for a new instance
+Its worth pointing out that of you change the shutdown behaviour of an instance from Stop to Terminate it will mean that if you initiate the shutdown from within the OS the Instance will transition from Running to Terminate
 
+![Alt text](images/ec2_image_5.png)
 
-This shows how you can change the behaviour for a running instance
+Therefore it is important to stress the fact that if you have the following:
 
+- Shutdown behaviour set to Terminate
+- Terminate Protection set to Enabled
 
-The key point here is if you have the following set, and instance is shutdown via the OS the result will be that the instance will transition from Running to Terminated:
+If you initiate the shutdown within the OS you are essentially circumventing Termination Protection
 
-Shutdown behaviour set to Terminate
+![Alt text](images/ec2_image_5.png)
 
-Terminate Protection set to Enabled
-
-You can see this in action here:
-
-
-
-
-
+``` bash
 [ec2-user@ip-172-31-82-241 ~]$ 
 Broadcast message from root@ip-172-31-82-241.ec2.internal (Mon 2020-05-18 07:03:45 UTC):
 The system is going down for power-off at Mon 2020-05-18 07:04:45 UTC!
+```
 
-Termination Protection will only prevent from accidental termination via the AWS Console and the AWS CLI.  If the default behaviour is set to Terminate and you initiate a shutdown via the OS the instance will be Terminated
+![Alt text](images/ec2_image_6.png)
 
- 
+***Termination Protection will only prevent from accidental termination via the AWS Console and the AWS CLI.  If the default behaviour is set to Terminate and you initiate a shutdown via the OS the instance will be Terminated***
 
-EC2 Launch Troubleshooting
- In the AWS Console within EC2 you can see what the limits are for your account
+
+**EC2 Launch Troubleshooting**
+
+In the AWS Console within EC2 you can see what the limits are for your account
 
 
 InstanceLimitExceeded - This is the error you will get when you try and stand up and instance and you have reached your limits.  This can be rectified by placing a call to AWS support.  At the moment the limit is set to 32 vCPUs however previously it was set to 20 instances
