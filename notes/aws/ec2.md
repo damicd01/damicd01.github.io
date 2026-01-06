@@ -7,8 +7,7 @@ This is just a simple lab where:
 
 Below is how the instance looks in the AWS console
 
-<img src="images/ec2_image_1.png" alt="EC2 in AWS Console" width="600">
-
+![Alt text](images/ec2_image_1.png)
 
 **EC2 Change instance type**
 
@@ -59,12 +58,12 @@ Big Data job that needs to complete as quickly as possible
 
 The way you create a Placement Groups is via the AWS console in EC2:
 
-<img src="images/ec2_image_2.png" alt="EC2 in AWS Console" width="600">
-<img src="images/ec2_image_3.png" alt="EC2 in AWS Console" width="600">
+![Alt text](images/ec2_image_2.png)
+![Alt text](images/ec2_image_3.png)
 
 Once the Placement Group has been created you can then spin up and instance and place it in there
 
-<img src="images/ec2_image_4.png" alt="EC2 in AWS Console" width="600">
+![Alt text](images/ec2_image_4.png)
  
 **EC2 Shutdown Behaviour and Termination**
 
