@@ -7,7 +7,4 @@ title: AWS Notes
 
 ## Core Services
 - [EC2](./ec2)
-- [IAM](./iam)
-
-## General
-- Regions, AZs, and Edge locations
+- [SSM](./ssm)
