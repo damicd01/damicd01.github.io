@@ -157,105 +157,107 @@ Cancelling a Spot request will not automatically stop the instances started by i
 
 Here is a diagram that shows how to terminate a Spot instance:
 
+![Alt text](images/ec2_image_7.png)
 
 Lastly with Spot instances you can have Spot Fleets which allow you to have a mixture of Spot instances and possibly On-demand instances to satisfy your requirements.  The way the work is that you define your requirements (CPU, RAM, Max Price etc) and the Spot fleet will try to satisfy these.  You define a bunch of pools and the Spot fleets will fire off instances from pools in order to reach the capacity you require
 
 Spot instances strategies include:
 
-Lowest Price - pool with lowest price
+ - Lowest Price - pool with lowest price
+ - Diversified - Distributed across pools
+ - Capacity Optimised - Pool with optimal capcity 
 
-Diversified - Distributed across pools
+**EC2 Launch Types Hands on**
 
-Capacity Optimised - Pool with optimal capcity 
-
-EC2 Launch Types Hands on
 Ondemand instances is what we use mostly when doing these labs so we can skip these
 
 Reserved and Convertible Reserved instances can be purchased like so
 
+![Alt text](images/ec2_image_8.png)
 
 Scheduled Reserved Instances can be purchased like so
 
+![Alt text](images/ec2_image_9.png)
 
 Spot instances can be purchased like so - this also shows the Spot Block
 
-
-
+![Alt text](images/ec2_image_10.png)
+![Alt text](images/ec2_image_11.png)
  
 
 Dedicated hosts and Dedicated instances
 
-
-
+![Alt text](images/ec2_image_12.png)
+![Alt text](images/ec2_image_13.png)
  
 
-EC2 Instances Deep Dive
+**EC2 Instances Deep Dive**
+
 Think FIGHTDRMCPIXZ and this also a useful way to remember the main instance types:
 
 R - Think Lots of RAM (In memcache)
-
 C - Think Lots of CPU (DBs)
-
 M - Think Medium (Apps that are balanced)
-
 I - Think Lots of IO (DBs)
-
 G - Think GPU (Apps that need Graphics)
-
 T 2/3 - Think Turbo (Burstable CPU up to capacity)
-
 Tu 2/3 - Think Turbo (Burstable CPU unlimited)
-
 For T 2/3 once you start bursting into CPU you burn credits (you can view this on the Cloudwatch default metrics)
-
 For Tu 2/3 you only pay for what you burst
 
  
 
-EC2 AMI
-AWS comes with a bunch of AMIs ready for you to use, you can also buy or rent AMIs as well as create you own ones
+**EC2 AMI**
 
-AMIs are allocated on a per region basis, if you wish to use an AMI in another region you will need to copy it over
+- AWS comes with a bunch of AMIs ready for you to use, you can also buy or rent AMIs as well as create you own ones.
+- AMIs are allocated on a per region basis, if you wish to use an AMI in another region you will need to copy it over.
+- AMIs are stored in S3 however you don’t get to see the bucket in which they are stored in.
 
-AMIs are stored in S3 however you don’t get to see the bucket in which they are stored in
+As a quick example I have spun up an instance, installed/started/enabled httpd.  Once that is all in place I then created an AMI from it:
 
-As a quick example I have spun up an instance, installed/started/enabled httpd.  Once that is all in place I then created an AMI from it
-
+![Alt text](images/ec2_image_14.png)
 
 Once we have a custom AMI built from our instance we can spin up an instance from it - note the region as the AMI is only available where we created it.  Also note the owner which is our AWS account number
 
-
+![Alt text](images/ec2_image_15.png)
+![Alt text](images/ec2_image_16.png)
 
 Once the instance spins up we can access the noddy web page we created without having to configure it all over again
 
 You can copy the AMI to another region
 
+![Alt text](images/ec2_image_17.png)
 
-You can also share the AMI to another AWS 
+You can also share the AMI to another AWS Account
 
+![Alt text](images/ec2_image_18.png)
 
 Once shared you can access the account you shared the AMI with and you will be able to see it in there.  It will be in the same region the AMI came from
 
+![Alt text](images/ec2_image_19.png)
 
-However if you try and copy it you get the following
+However if you try and copy it you get the error below.  This was because we didn’t grant permissions to create an EBS snapshot from the volume.  if we enabled it and reshared
 
-The above is the case as we didn’t grant permissions to create an EBS snapshot from the volume.  if we enabled it and reshared
-
+![Alt text](images/ec2_image_20.png)
 
 When you share an AMI with another account you still remain the owner of that AMI however if they copy the AMI to another region they become the owner.  
 
 If you dont have the above set, you can just simply start an instance using the AMI in the secondary account and make an AMI from the running instance.  For example below I have fired up and instance with the root volume encrypted with the built in KMS key.  Once the instance is up and running and I try to build an AMI from it the AMI can only be created as encrypted, I don’t get any other options
 
+![Alt text](images/ec2_image_21.png)
 
 I then shared it with the secondary account - when I tried to allow “create volume permissions” from the snapshot I get the following error
 
+![Alt text](images/ec2_image_22.png)
 
 I also tried to share without allowing “create volume permissions” however that failed too with the following
 
+![Alt text](images/ec2_image_23.png)
 
 If you use an AMI that has an associated billingProduct such as a windows AMI, you won’t be able to share the AMI directly.  Instead you can create an AMI from an instance in the source account.  You are then able to share that AMI and grant the target account “create volume permissions” (if you dont allow permissions you wont be able to copy the AMI to another region from the target account, instead you need to spin up an instance in the region the AMI sits in originally, create an AMI and then copy that over)
 
-Elastic IP
+**Elastic IP**
+
 As we have seen previously when you stop and start an instance the Public IP can change
 
 You can reserve an Elastic IP and attach it to an instance when it starts.  If you then need to shutdown that instance you can transfer it to another instance
@@ -268,21 +270,25 @@ You can have max 5 Elastic IPs reserved.  This can be increased by placing a cal
 
 Before you can allocate an Elastic IP you have to reserve it
 
+![Alt text](images/ec2_image_24.png)
 
 The IP has created and now ready to be allocated
 
+![Alt text](images/ec2_image_25.png)
 
 Once it has been reserved you can associate with an instance
 
+![Alt text](images/ec2_image_26.png)
 
 You can verify in the console
 
+![Alt text](images/ec2_image_27.png)
 
 Now you could power down the instance and attach the Elastic IP to another instance.  I wont bother documenting but you get the point
 
  
+**Cloudwatch Metrics for EC2**
 
-Cloudwatch Metrics for EC2
 Out of the box the following metrics for EC2 are gathered into Cloudwatch every 5 mins:
 
 Disk IO - for Instance store backed AMIs
