@@ -154,3 +154,138 @@ mainSteps:
     - Restart the primary instance
 
 ![Alt text](images/ssm/ssm_image_20.png)
+ 
+  - Option 2:
+    - Choose AWSSupport-ResetAccess
+
+![Alt text](images/ssm/ssm_image_21.png)
+
+- If you lost your key to an Instance Store backed Instance you can:
+  - Restart your instance
+  - Use SSM to access the shell and change the contents of ~/.ssh/authorized_keys (this works for EBS backed instances too)
+
+**SSM Parameter Store Overview**
+- It is a secure store where you can place your configuration parameters along with their secrets
+- You can encrypt secrets by leveraging KMS.  Once encrypted with a KMS key Parameter Store will talk directly to KMS to decrypt the secret for you providing your IAM user you are using has priviliges to do so
+
+![Alt text](images/ssm/ssm_image_22.png)
+
+- It is a free service and serverless so it can scale infinitely
+- As pointed out above you restrict access to Parameter Store via IAM permissions
+- You can arrange your secrets and configurations by using a tree like structure so you can then reference the items in a similar fashion as you would access items on a FS.  As you can see below you could then have 2 separate lambda functions which could access different sections of the Parameter store to access what they need
+
+![Alt text](images/ssm/ssm_image_23.png)
+
+**SSM Parameter Store Lab**
+- As a First step we created 4 Parameters split in the following way:
+  - 2 x DB urls (prod/dev) non encrypted
+  - 2 x BB passwords (prod/dev) encrypted via KMS
+- This is an example of how you create a non encrypted item
+
+![Alt text](images/ssm/ssm_image_24.png)
+
+- This is how you create an encrypted item
+
+![Alt text](images/ssm/ssm_image_25.png)
+
+- This is how they will look
+
+![Alt text](images/ssm/ssm_image_26.png)
+
+- As pointed out earlier you can do version control in Parameter store, below you can see how you can view the history of the item
+
+![Alt text](images/ssm/ssm_image_27.png)
+
+- Below you can see how I queried the Parameter store via the CLI to get the value of the items
+
+```bash
+ddamico@Danieles-MBP:~$ aws ssm get-parameters --names /my_app/dev/db_url
+{
+    "Parameters": [
+        {
+            "Name": "/my_app/dev/db_url",
+            "Type": "String",
+            "Value": "https://my_app_dev:3306",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:21:25.656000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/dev/db_url"
+        }
+    ],
+    "InvalidParameters": []
+}
+ddamico@Danieles-MBP:~$ aws ssm get-parameters --names /my_app/dev/db_password
+{
+    "Parameters": [
+        {
+            "Name": "/my_app/dev/db_password",
+            "Type": "SecureString",
+            "Value": "AQICAHhuRx+k300qQuiXu6xb482wDrb4AgZZh33Q9AThZBMDTgHalj1ntKM/DZebe0UDFfVEAAAAZjBkBgkqhkiG9w0BBwagVzBVAgEAMFAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMnDlvULXw2g0tpExZAgEQgCN3AgTRscVM5NUOJAHZJpGmR/tLU3kMGqglqFNUiC30QiJVFg==",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:22:06.605000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/dev/db_password"
+        }
+    ],
+    "InvalidParameters": []
+}
+```
+
+- The second value above show how it is coming up as an encrypted value, if you want to decrypt it (under the covers Parameter store will directly contact KMS for you) you do the following
+
+```bash
+ddamico@Danieles-MBP:~$ aws ssm get-parameters --names /my_app/dev/db_password --with-decryption
+{
+    "Parameters": [
+        {
+            "Name": "/my_app/dev/db_password",
+            "Type": "SecureString",
+            "Value": "abdc1234",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:22:06.605000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/dev/db_password"
+        }
+    ],
+    "InvalidParameters": []
+}
+```
+
+- Below is a different variation of querying the API via the CLI as we asking to return all Parameter items under /my-app and return all encrypted items as clear text
+
+```bash
+ddamico@Danieles-MBP:~$ aws ssm get-parameters-by-path --path /my_app --recursive --with-decryption
+{
+    "Parameters": [
+        {
+            "Name": "/my_app/dev/db_password",
+            "Type": "SecureString",
+            "Value": "abdc1234",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:22:06.605000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/dev/db_password"
+        },
+        {
+            "Name": "/my_app/dev/db_url",
+            "Type": "String",
+            "Value": "https://my_app_dev:3306",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:21:25.656000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/dev/db_url"
+        },
+        {
+            "Name": "/my_app/prod/db_password",
+            "Type": "SecureString",
+            "Value": "abcd1234",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:30:14.091000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/prod/db_password"
+        },
+        {
+            "Name": "/my_app/prod/db_url",
+            "Type": "String",
+            "Value": "https://my_app_prod:3306",
+            "Version": 1,
+            "LastModifiedDate": "2020-05-29T07:28:18.272000+01:00",
+            "ARN": "arn:aws:ssm:us-east-1:978410533225:parameter/my_app/prod/db_url"
+        }
+    ]
+}
+```
