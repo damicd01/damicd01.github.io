@@ -35,3 +35,21 @@
 - Just as a note I created the instances with a completely empty SG which means no traffic is allowed in to the instances.  The way that SSM works is via the the Agent installed on the instances thus requiring no SSH to be opened
 
 ![Alt text](images/ssm/ssm_image_5.png)
+
+**AWS Tags & Resource Groups**
+
+- In the previous section I tagged the instances and those tags will help us interact with them via SSM, also the tags are useful for creating Resource Groups which are a way of logically partitioning instances
+
+- Tags are used for the following (as a rule of thumb is better to have too many tags than too few):
+  - Resource Groups
+  - Cost Allocation
+  - Automation
+  - SSM
+
+- Resource Groups are Region centric so you can’t create Resource Groups that span across multiple Regions
+
+- I then created some Resource Groups which will include the tags that I previously assigned to the 3 test Instances
+
+![Alt text](images/ssm/ssm_image_6.png)
+
+- Once you have Resource Groups created you can run Tasks against them in SSM.  Think of this like running a playbook against Instances in inventory in Ansible
