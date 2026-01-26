@@ -15,41 +15,59 @@
 
 - Here we demostrate how SSM works by creating 3 instances from AWS Linux AMI which have the SSM agent installed already
 - Created a role in IAM for EC2 instances to be able to communicate with SSM
-
 ![Alt text](images/ssm/ssm_image_1.png)
-
 - Assigned to the instances
-
 ![Alt text](images/ssm/ssm_image_2.png)
-
 - I also created some test tags:
   - Team - Finance/Ops
   - Env - Prod/Dev
-
 ![Alt text](images/ssm/ssm_image_3.png)
-
 - Once the IAM role is in place the instances will talk back to SSM and show up under Managed Instances
-
 ![Alt text](images/ssm/ssm_image_4.png)
-
 - Just as a note I created the instances with a completely empty SG which means no traffic is allowed in to the instances.  The way that SSM works is via the the Agent installed on the instances thus requiring no SSH to be opened
-
 ![Alt text](images/ssm/ssm_image_5.png)
 
 **AWS Tags & Resource Groups**
 
 - In the previous section I tagged the instances and those tags will help us interact with them via SSM, also the tags are useful for creating Resource Groups which are a way of logically partitioning instances
-
 - Tags are used for the following (as a rule of thumb is better to have too many tags than too few):
   - Resource Groups
   - Cost Allocation
   - Automation
   - SSM
-
 - Resource Groups are Region centric so you can’t create Resource Groups that span across multiple Regions
-
 - I then created some Resource Groups which will include the tags that I previously assigned to the 3 test Instances
-
 ![Alt text](images/ssm/ssm_image_6.png)
-
 - Once you have Resource Groups created you can run Tasks against them in SSM.  Think of this like running a playbook against Instances in inventory in Ansible
+
+**SSM Documents & SSM Run Command**
+
+- SSM Documents can be defined in either YAML or JSON.  There are plenty of built in ones to pick and use as starting point
+![Alt text](images/ssm/ssm_image_7.png)
+- The basic structure of these is:
+  - Parameters
+  - Actions
+- A Document is the Central piece to the SSM Automation as they dictate what Actions to take and thus what service within SSM needs to be called upon
+![Alt text](images/ssm/ssm_image_8.png)
+- A Document is basically like a playbook that defines Actions that will be taken against instances using Resource Groups
+- What we are going to do now is demo how it works by:
+  - Create a Document (YAML) which will be used by the Run Command
+```bash
+---
+schemaVersion: '2.2'
+description: State Manager Bootstrap Example
+parameters: {}
+mainSteps:
+- action: aws:runShellScript
+  name: configureServer
+  inputs:
+    runCommand:
+    - sudo yum install -y httpd
+    - sudo systemctl start httpd
+    - sudo systemctl enable httpd
+```
+- This will install httpd on each of the instances
+- The Run Command will be executed against a Resource group created previously
+![Alt text](images/ssm/ssm_image_9.png)
+- We will leave the Parallelism and Error threshold as they are
+- Once ran I opened up port 80 inbound and checked I could access the home page of the test webserver
