@@ -27,7 +27,5 @@ All helm charts will be deployed and maintained via gitops throuhg flux.  The pl
 All secrets will be stored in gitlab encrypted variables and then held within K8s secret objects
 
 
-![Alt text](images/ec2_image_1.png)
 
-**EC2 Change instance type**
 
