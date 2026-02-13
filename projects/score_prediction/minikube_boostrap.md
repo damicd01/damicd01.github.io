@@ -1,4 +1,4 @@
-**Deploying the minikube cluster and installing flux**
+**Initial pre-reqs**
 
 To deploy the minikuke cluster I first deleted any old traces of minikube installations:
 
@@ -30,3 +30,15 @@ I then installed ```kubens```
 
 <a href="https://webinstall.dev/kubens/">kubens</a>
 
+
+**Flux bootstrap**
+
+The flux documentation is here:
+
+<a href="https://fluxcd.io/flux/get-started/">fluxcd</a>
+
+The reason I wanted to use fluxcd is because it fairly light-weight, documentation is good and I wanted to leverage helm to install my K8s objects instead of creating multiple K8s yaml files and installing them individually.  Also I wanted a tool that would allow me to just make changes to the repo and once pushed and merged it would take care of the deployment for me.
+
+As per the documentation I installed the flux cli:
+
+```brew install fluxcd/tap/flux```
