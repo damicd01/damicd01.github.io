@@ -10,6 +10,8 @@ maintained in Markdown.
 
 ## Topics
 
-- [Bootstrap the minikube environment](./minikube/)
-- [Azure](./azure/)
-- [Linux](./linux/)
+- [Project Introduction](./project_introduction)
+- [Bootstrap the minikube environment](./minikube_boostrap)
+- [Create the ingestion stage of our CICD ](./ingestion_cicd)
+- [Create the model training part of our CICD](./model_training_cicd)
+- [Create the model deployment part of our CICD](./model_deployment_cicd)
