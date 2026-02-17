@@ -12,4 +12,4 @@ maintained in Markdown.
 
 - [AWS](./aws/)
 - [Azure](./azure/)
-- [Linux](./linux/)
+- [GCP](./gcp/)
